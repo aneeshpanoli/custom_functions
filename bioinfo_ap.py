@@ -16,9 +16,10 @@ def clinvar_list_to_dict(l):
 def clinvar_vcf_gz_to_csv(fname_in, fname_out, vep=False):
 
     '''
+    CAUTION: this will take a couple of minutes depending on the input file size
     converts a clinvar.vcf.gz to regualr csv file
-    fname_in: input file with .gz
-    fname_out: output filename ending with .csv
+    fname_in: input filepath with .gz
+    fname_out: output filepath ending with .csv
     vep: if set True, exports a vep annotated csv
     '''
     # parser = argparse.ArgumentParser()

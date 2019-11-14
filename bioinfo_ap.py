@@ -13,16 +13,23 @@ def clinvar_list_to_dict(l):
     return {k: v for k, v in (x.split('=') for x in l)}
 
 
-def clinvar_vcf_gz_to_csv():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--vep', action='store_true',
-                        help='export a vep annotated csv')
-    args = parser.parse_args()
-    vep = args.vep
+def clinvar_vcf_gz_to_csv(fname_in, fname_out, vep=False):
+
+    '''
+    converts a clinvar.vcf.gz to regualr csv file
+    fname_in: input file with .gz
+    fname_out: output filename ending with .csv
+    vep: if set True, exports a vep annotated csv
+    '''
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('--vep', action='store_true',
+    #                     help='export a vep annotated csv')
+    # args = parser.parse_args()
+    # vep = args.vep
 
     # store column info
     cv_columns = {}
-    with gzip.open('clinvar.vcf.gz', 'rt') as f:
+    with gzip.open(fname_in, 'rt') as f:
         for metaline in f:
             if metaline.startswith('##INFO'):
                 colname = re.search('ID=(\w+),',
@@ -32,7 +39,7 @@ def clinvar_vcf_gz_to_csv():
                 cv_columns[colname.group(1)] = coldesc.group(1).strip('"')
 
     # read clinvar vcf
-    cv_df = pd.read_csv('clinvar.vcf.gz', sep='\t', comment='#', header=None,
+    cv_df = pd.read_csv(fname_in, sep='\t', comment='#', header=None,
                         usecols=[0, 1, 2, 3, 4, 7], dtype={0: object})
 
     # convert dictionaries to columns
@@ -115,9 +122,9 @@ def clinvar_vcf_gz_to_csv():
         # finally drop extra REF info from vep
         df = df.drop(columns=['GIVEN_REF', 'USED_REF'])
 
-        df.drop(columns=['ID']).to_csv('clinvar_conflicting.csv',
+        df.drop(columns=['ID']).to_csv(fname_out,
                                        index=False)
 
     else:
-        cv_df.drop(columns=['ID']).to_csv('clinvar_conflicting.csv',
+        cv_df.drop(columns=['ID']).to_csv(fname_out,
                                           index=False)

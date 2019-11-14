@@ -21,13 +21,14 @@ def sns_count_plot(df_name, col, style):
   ax.set_xticklabels(labels, rotation=90)
   ax.set(xlabel=col, ylabel='Count')
 
-def plot_crosstab(df_name, col_a, col_b):
+def plot_crosstab(df_name, col_a, col_b, num_rows):
     '''
     Plots the cross-tab values between two columns
+    num_rows: number of rows to plot
 
     '''
   df = pd.crosstab(df[col_a], df[col_b], margins=True)
   df.drop('All', axis=0, inplace=True)
-  df = df.sort_values(by="All", ascending=False).head(50)
+  df = df.sort_values(by="All", ascending=False).head(num_rows)
   df.drop('All', axis=1, inplace=True)
   df.plot.bar(stacked=True, figsize=(12, 8), color=sns.color_palette("Paired"))

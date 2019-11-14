@@ -17,3 +17,4 @@ def ungz(fname_gz, fname):
   with gzip.open(fname_gz, 'rb') as f_in:
     with open('fname.tsv', 'wb') as f_out:
         shutil.copyfileobj(f_in, f_out)
+

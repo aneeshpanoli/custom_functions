@@ -16,6 +16,8 @@ def clinvar_list_to_dict(l):
 def clinvar_vcf_gz_to_csv(fname_in, fname_out, vep=False):
 
     '''
+    NOT A GENERAL FUNCTION: THIS FILTERS varinets that have more than one submission
+    ALSO adds a CLASS to classify ambigous phenotypes
     CAUTION: this will take a couple of minutes depending on the input file size
     converts a clinvar.vcf.gz to regualr csv file
     fname_in: input filepath with .gz
@@ -129,3 +131,41 @@ def clinvar_vcf_gz_to_csv(fname_in, fname_out, vep=False):
     else:
         cv_df.drop(columns=['ID']).to_csv(fname_out,
                                           index=False)
+
+
+def clinvar_vcf_gz_to_df(fname_in):
+    '''
+    CAUTION: this will take a couple of minutes depending on the input file size
+    converts a clinvar.vcf.gz to regualar pandas dataframe
+    fname_in: input filepath with .gz
+    '''
+
+    # store column info
+    cv_columns = {}
+    with gzip.open(fname_in, 'rt') as f:
+        for metaline in f:
+            if metaline.startswith('##INFO'):
+                colname = re.search('ID=(\w+),',
+                                    metaline.strip('#\n'))
+                coldesc = re.search('.*Description=(.*)>',
+                                    metaline.strip('#\n'))
+                cv_columns[colname.group(1)] = coldesc.group(1).strip('"')
+
+    # read clinvar vcf
+    cv_df = pd.read_csv(fname_in, sep='\t', comment='#', header=None,
+                        usecols=[0, 1, 2, 3, 4, 7], dtype={0: object})
+
+    # convert dictionaries to columns
+    cv_df = pd.concat([cv_df.drop([7], axis=1),
+                       cv_df[7].str.split(';')
+                            .apply(clinvar_list_to_dict)
+                            .apply(pd.Series)], axis=1
+                      )
+    # rename columns
+    cv_df.rename(columns={0: 'CHROM',
+                          1: 'POS',
+                          2: 'ID',
+                          3: 'REF',
+                          4: 'ALT'},
+                 inplace=True)
+   return cv_df

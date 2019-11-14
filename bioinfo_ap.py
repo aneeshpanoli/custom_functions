@@ -168,4 +168,4 @@ def clinvar_vcf_gz_to_df(fname_in):
                           3: 'REF',
                           4: 'ALT'},
                  inplace=True)
-   return cv_df
+    return cv_df

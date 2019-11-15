@@ -8,8 +8,8 @@ def unzip(filename):
 '''unzips as .zip given file_name'''
   with ZipFile(filename, 'r') as zipObj:
     zipObj.extractall()
-    
-    
+
+
 def ungz(fname_gz, fname):
   '''ungz given .gz filename
   fname_gz: file.csv.gz

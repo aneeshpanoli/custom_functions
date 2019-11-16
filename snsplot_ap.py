@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-%matplotlib inline
 import seaborn as sns
 import pandas a pd
 sns.set()

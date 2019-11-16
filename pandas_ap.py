@@ -5,8 +5,8 @@ def count_feature(df, col, new_col):
   col: column name to countplot
   new_col: Column name for the new Counts column
   '''
-  new_df = pd.DataFrame.from_dict(Counter(df[col]), orient='index',
-                                  columns=[new_col]).
-                                  sort_values(new_col,
+  new_df = pd.DataFrame.from_dict(Counter(df[col]), orient='index',\
+                                  columns=[new_col]).\
+                                  sort_values(new_col,\
                                   ascending=False).reset_index()
   return new_df

@@ -17,7 +17,6 @@ params = {'axes.titlesize': large,
 plt.rcParams.update(params)
 plt.style.use('seaborn-whitegrid')
 sns.set_style("white")
-%matplotlib inline
 
 # Version
 print(mpl.__version__)  #> 3.0.0
